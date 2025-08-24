@@ -1,4 +1,4 @@
-# OrdersApi
+# 📦 OrdersApi
 
 A simple **.NET 9 Web API** to manage orders.  
 Supports creating, reading, updating, and deleting orders with clean response DTOs.
@@ -44,7 +44,7 @@ https://localhost:7000
 
 ## 📖 API Endpoints
 
-### 1. Get all orders
+### 1. 📋 Get all orders
 ```http
 GET /api/orders
 ```
@@ -62,7 +62,7 @@ GET /api/orders
 
 ---
 
-### 2. Create a new order
+### 2. ✏️ Create a new order
 ```http
 POST /api/orders
 Content-Type: application/json
@@ -83,7 +83,7 @@ Content-Type: application/json
 
 ---
 
-### 3. Update an order
+### 3. ✏️ Update an order
 ```http
 PUT /api/orders/{id}
 Content-Type: application/json
@@ -104,7 +104,7 @@ Content-Type: application/json
 
 ---
 
-### 4. Delete an order
+### 4. ❌ Delete an order
 ```http
 DELETE /api/orders/{id}
 ```
