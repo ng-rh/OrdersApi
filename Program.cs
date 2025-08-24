@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using OrdersApi.Data; // Update with your actual DbContext namespace
+using OrdersApi; // Ensure this matches the namespace of OrdersDbContext
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ var password = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD") ?? "demo"
 
 var connectionString = $"Host={host};Port={port};Database={dbName};Username={username};Password={password}";
 
-// Add DbContext with PostgreSQL
+// Register DbContext with PostgreSQL
 builder.Services.AddDbContext<OrdersDbContext>(options =>
     options.UseNpgsql(connectionString));
 
@@ -22,7 +22,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Swagger UI only in development
+// Swagger only in development
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -33,4 +33,20 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// Apply EF Core
+// Automatically apply EF Core migrations at startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
+    try
+    {
+        db.Database.Migrate(); // Creates the database and tables if they don't exist
+        Console.WriteLine("Database migration applied successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database migration failed: {ex.Message}");
+        throw; // optional: rethrow to fail app startup if migration fails
+    }
+}
+
+app.Run();
