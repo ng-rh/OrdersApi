@@ -1,3 +1,7 @@
+using System;
+using System.ComponentModel.DataAnnotations.Schema;
+
+[Table("orders")]   // force lowercase table
 public class Order
 {
     public int Id { get; set; }

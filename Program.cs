@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using OrdersApi; // Ensure this matches the namespace of OrdersDbContext
 
 var builder = WebApplication.CreateBuilder(args);
 
