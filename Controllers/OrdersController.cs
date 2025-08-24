@@ -1,131 +1,83 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Concurrent;
+using Microsoft.EntityFrameworkCore;
 
-namespace OrdersApi.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class OrdersController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class OrdersController : ControllerBase
+    private readonly OrdersDbContext _db;
+
+    public OrdersController(OrdersDbContext db)
     {
-        private static readonly ConcurrentDictionary<int, Order> Orders = new();
-        private static int _nextId = 0;
-
-        // GET: api/orders
-        [HttpGet]
-        public IActionResult GetOrders()
-        {
-            var response = Orders.Values
-                .OrderBy(o => o.Id)
-                .Select(o => new OrderResponse
-                {
-                    Id = o.Id,
-                    Name = o.Name,
-                    CreatedAt = o.CreatedAt
-                });
-
-            return Ok(response);
-        }
-
-        // POST: api/orders
-        [HttpPost]
-        public IActionResult CreateOrder([FromBody] CreateOrderRequest request)
-        {
-            if (string.IsNullOrWhiteSpace(request.Name))
-            {
-                return BadRequest(new { error = "Order name cannot be empty." });
-            }
-
-            var order = new Order
-            {
-                Id = Interlocked.Increment(ref _nextId),
-                Name = request.Name,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            Orders[order.Id] = order;
-
-            var response = new OrderResponse
-            {
-                Id = order.Id,
-                Name = order.Name,
-                CreatedAt = order.CreatedAt
-            };
-
-            return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, response);
-        }
-
-        // PUT: api/orders/{id}
-        [HttpPut("{id:int}")]
-        public IActionResult UpdateOrder(int id, [FromBody] UpdateOrderRequest request)
-        {
-            if (string.IsNullOrWhiteSpace(request.Name))
-            {
-                return BadRequest(new { error = "Order name cannot be empty." });
-            }
-
-            if (Orders.TryGetValue(id, out var existing))
-            {
-                existing.Name = request.Name;
-
-                var response = new OrderResponse
-                {
-                    Id = existing.Id,
-                    Name = existing.Name,
-                    CreatedAt = existing.CreatedAt
-                };
-
-                return Ok(response);
-            }
-
-            return NotFound(new { error = $"Order with id {id} not found." });
-        }
-
-        // DELETE: api/orders/{id}
-        [HttpDelete("{id:int}")]
-        public IActionResult DeleteOrder(int id)
-        {
-            if (Orders.TryRemove(id, out var removed))
-            {
-                var response = new OrderResponse
-                {
-                    Id = removed.Id,
-                    Name = removed.Name,
-                    CreatedAt = removed.CreatedAt
-                };
-
-                return Ok(response);
-            }
-
-            return NotFound(new { error = $"Order with id {id} not found." });
-        }
+        _db = db;
     }
 
-    // === Entities & DTOs ===
-
-    // Internal entity
-    public class Order
+    [HttpGet]
+    public async Task<IActionResult> GetOrders()
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public DateTime CreatedAt { get; set; }
+        var orders = await _db.Orders
+            .OrderBy(o => o.Id)
+            .Select(o => new OrderResponse
+            {
+                Id = o.Id,
+                Name = o.Name,
+                CreatedAt = o.CreatedAt
+            })
+            .ToListAsync();
+
+        return Ok(orders);
     }
 
-    // Requests
-    public class CreateOrderRequest
+    [HttpPost]
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest request)
     {
-        public string Name { get; set; } = "";
+        if (string.IsNullOrWhiteSpace(request.Name))
+            return BadRequest(new { error = "Order name cannot be empty." });
+
+        var order = new Order { Name = request.Name };
+        _db.Orders.Add(order);
+        await _db.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(GetOrders), new { id = order.Id }, new OrderResponse
+        {
+            Id = order.Id,
+            Name = order.Name,
+            CreatedAt = order.CreatedAt
+        });
     }
 
-    public class UpdateOrderRequest
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateOrder(int id, [FromBody] UpdateOrderRequest request)
     {
-        public string Name { get; set; } = "";
+        var order = await _db.Orders.FindAsync(id);
+        if (order == null) return NotFound(new { error = $"Order with id {id} not found." });
+        if (string.IsNullOrWhiteSpace(request.Name)) return BadRequest(new { error = "Order name cannot be empty." });
+
+        order.Name = request.Name;
+        await _db.SaveChangesAsync();
+
+        return Ok(new OrderResponse
+        {
+            Id = order.Id,
+            Name = order.Name,
+            CreatedAt = order.CreatedAt
+        });
     }
 
-    // Responses
-    public class OrderResponse
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteOrder(int id)
     {
-        public int Id { get; set; }
-        public string Name { get; set; } = "";
-        public DateTime CreatedAt { get; set; }
+        var order = await _db.Orders.FindAsync(id);
+        if (order == null) return NotFound(new { error = $"Order with id {id} not found." });
+
+        _db.Orders.Remove(order);
+        await _db.SaveChangesAsync();
+
+        return Ok(new OrderResponse
+        {
+            Id = order.Id,
+            Name = order.Name,
+            CreatedAt = order.CreatedAt
+        });
     }
 }
