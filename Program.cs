@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Read PostgreSQL connection info from environment variables
-var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "postgres-service";
+var host = Environment.GetEnvironmentVariable("POSTGRES_HOST") ?? "postgresql";
 var port = Environment.GetEnvironmentVariable("POSTGRES_PORT") ?? "5432";
 var dbName = Environment.GetEnvironmentVariable("POSTGRES_DB") ?? "ordersdb";
 var username = Environment.GetEnvironmentVariable("POSTGRES_USER") ?? "demo";
