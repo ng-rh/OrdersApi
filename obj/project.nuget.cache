@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Zv73rSo9gRI=",
+  "dgSpecHash": "INx519m95X8=",
   "success": true,
-  "projectFilePath": "/Users/nehagupta/Downloads/orders-demo-kafka-connect-mysql/src/OrdersApi/OrdersApi.csproj",
+  "projectFilePath": "/Users/nehagupta/Downloads/Demos/dotnet-orders-demo/OrdersApi/OrdersApi.csproj",
   "expectedPackageFiles": [
     "/Users/nehagupta/.nuget/packages/microsoft.extensions.apidescription.server/6.0.5/microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "/Users/nehagupta/.nuget/packages/microsoft.openapi/1.6.14/microsoft.openapi.1.6.14.nupkg.sha512",

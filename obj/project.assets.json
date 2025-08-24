@@ -452,11 +452,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/nehagupta/Downloads/orders-demo-kafka-connect-mysql/src/OrdersApi/OrdersApi.csproj",
+      "projectUniqueName": "/Users/nehagupta/Downloads/Demos/dotnet-orders-demo/OrdersApi/OrdersApi.csproj",
       "projectName": "OrdersApi",
-      "projectPath": "/Users/nehagupta/Downloads/orders-demo-kafka-connect-mysql/src/OrdersApi/OrdersApi.csproj",
+      "projectPath": "/Users/nehagupta/Downloads/Demos/dotnet-orders-demo/OrdersApi/OrdersApi.csproj",
       "packagesPath": "/Users/nehagupta/.nuget/packages/",
-      "outputPath": "/Users/nehagupta/Downloads/orders-demo-kafka-connect-mysql/src/OrdersApi/obj/",
+      "outputPath": "/Users/nehagupta/Downloads/Demos/dotnet-orders-demo/OrdersApi/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/nehagupta/.nuget/NuGet/NuGet.Config"
