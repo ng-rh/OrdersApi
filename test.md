@@ -4,7 +4,7 @@ psql -h localhost -p 5432 -U demo -d ordersdb
 \c ordersdb
 \dt
 SELECT * FROM "Orders";
-\d "Orders"
+\d "orders"
 
 
 
